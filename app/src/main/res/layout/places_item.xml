@@ -46,6 +46,16 @@
         android:textColor="#343434"
         android:textSize="10dip" />
 
+    <TextView
+        android:id="@+id/check_in"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/place_name_text"
+        android:layout_marginTop="16dip"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:textColor="@color/colorAccent"
+        android:textSize="10dip" />
+
     <!-- Place is Verified or Not -->
     <TextView
         android:id="@+id/verified_or_not"
@@ -53,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/place_name_text"
+
         android:layout_marginRight="5dip"
         android:gravity="right"
         android:textColor="#10bcc9"

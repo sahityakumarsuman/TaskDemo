@@ -25,6 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_VERIFIED = "place_verification";
     private static final String KEY_IMAGE_PATH = "image";
     private static final String KEY_ADDRESS = "address";
+    private static final String CHECKIN = "check_in";
 
 
     public DatabaseHandler(Context context) {
@@ -35,7 +36,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PLACE_DETAILS + "("
-                + KEY_PLACE_NAME + " VARCHAR(150), " + KEY_VERIFIED + " VARCHAR(20), " + KEY_IMAGE_PATH + " TEXT ," + KEY_ADDRESS + " TEXT" + ")";
+                + KEY_PLACE_NAME + " VARCHAR(150), " + KEY_VERIFIED + " VARCHAR(20), " + KEY_IMAGE_PATH + " TEXT ," + KEY_ADDRESS + " TEXT, " + CHECKIN + " INT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
 
     }
@@ -58,6 +59,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_VERIFIED, placeDetail.getPlaceAddress());
         values.put(KEY_IMAGE_PATH, placeDetail.getPlaceImageUrl());
         values.put(KEY_ADDRESS, placeDetail.getPlaceVerefiedOrNot());
+        values.put(CHECKIN, placeDetail.get_checkIn());
         db.insert(TABLE_PLACE_DETAILS, null, values);
         db.close();
     }
@@ -90,6 +92,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 placeDetail.setPlaceAddress(cursor.getString(1));
                 placeDetail.setPlaceImage(cursor.getString(2));
                 placeDetail.setPlaceVerfication(cursor.getString(3));
+                placeDetail.setCheckIn(cursor.getInt(4));
                 placeDetails.add(placeDetail);
             } while (cursor.moveToNext());
         }

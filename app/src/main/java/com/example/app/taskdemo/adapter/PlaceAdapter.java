@@ -70,11 +70,13 @@ public class PlaceAdapter extends BaseAdapter {
         TextView palce_address = (TextView) convertView.findViewById(R.id.place_address);
         TextView place_verified_or_not = (TextView) convertView.findViewById(R.id.verified_or_not);
         NetworkImageView placeImage = (NetworkImageView) convertView.findViewById(R.id.place_image);
+        TextView checkInData = (TextView) convertView.findViewById(R.id.check_in);
         // ---------------------------------------------------------------------------------------
         PlaceDetail placeDetail = _place.get(position);
         palce_name.setText(placeDetail.getPlaceName());
         palce_address.setText(placeDetail.getPlaceAddress());
         place_verified_or_not.setText(placeDetail.getPlaceVerefiedOrNot());
+        checkInData.setText("Check In " + placeDetail.get_checkIn());
         placeImage.setImageUrl(placeDetail.getPlaceImageUrl(), imageLoader);
         return convertView;
 

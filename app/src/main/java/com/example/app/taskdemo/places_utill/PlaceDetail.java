@@ -6,17 +6,19 @@ package com.example.app.taskdemo.places_utill;
 public class PlaceDetail {
 
     String _placeName, _placeImage, _placeVerifiedOrNot, _placeAddress;
+    private int _checkIn;
 
     public PlaceDetail() {
 
     }
 
-    public PlaceDetail(String placeName, String address, String imagepath, String verify) {
+    public PlaceDetail(String placeName, String address, String imagepath, String verify, int checkIn) {
 
         this._placeName = placeName;
         this._placeAddress = address;
         this._placeVerifiedOrNot = verify;
         this._placeImage = imagepath;
+        this._checkIn = checkIn;
     }
 
     public void setPlaceName(String placeName) {
@@ -52,5 +54,16 @@ public class PlaceDetail {
 
     public String getPlaceAddress() {
         return this._placeAddress;
+
+
+    }
+
+    public void setCheckIn(int checkIn) {
+        this._checkIn = checkIn;
+    }
+
+    public int get_checkIn() {
+        return this._checkIn;
     }
 }
+

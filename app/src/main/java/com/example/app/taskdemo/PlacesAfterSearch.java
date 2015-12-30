@@ -217,7 +217,12 @@ public class PlacesAfterSearch extends ActionBarActivity {
                                     verify = "Verification Not Available";
                                 }
 
-                                db.addplaceDetails(new PlaceDetail(name, palceAddress, imagePath, verify));
+                                JSONObject CheckInPoints = venuInsideJSONobject.getJSONObject("stats");
+
+                                int checkinpoint = CheckInPoints.getInt("checkinsCount");
+                                placeDetail.setCheckIn(checkinpoint);
+
+                                db.addplaceDetails(new PlaceDetail(name, palceAddress, imagePath, verify,checkinpoint));
 
                                 _placeList.add(placeDetail);
 
