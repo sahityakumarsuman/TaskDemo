@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/list_view_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/result_show_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="dafdafsa"
+                android:textSize="@dimen/item_touch_helper_max_drag_scroll_per_frame" />
+
+            <ListView
+                android:id="@+id/listView_show_places_with_image"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"></ListView>
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <fragment
+            android:id="@+id/fragment_show"
+            android:name="com.example.app.taskdemo.ShowPlaceDetails"
+            class="com.example.app.taskdemo.ShowPlaceDetails"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tag="fragment_tag"></fragment>
+    </FrameLayout>
+
+
+</LinearLayout>
+
