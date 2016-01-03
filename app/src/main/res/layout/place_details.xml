@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="Asia" />
+             />
 
         <View
             android:layout_width="fill_parent"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="weight" />
+                 />
 
             <TextView
                 android:id="@+id/place_verification_fragment"
@@ -52,23 +52,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="weight" />
+                 />
 
             <TextView
                 android:id="@+id/place_formatedAddress_fragment"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="height" />
+                 />
 
 
             <TextView
-                android:id="@+id/place_summry_fragment"
+                android:id="@+id/place_checkIn_fragment"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Drinks" />
+                 />
 
         </LinearLayout>
 

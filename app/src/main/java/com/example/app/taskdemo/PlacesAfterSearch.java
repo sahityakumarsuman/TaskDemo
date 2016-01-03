@@ -38,7 +38,7 @@ import java.util.List;
 public class PlacesAfterSearch extends ActionBarActivity {
 
 
-    String apiString = "";
+    private static String apiString = "";
 
     private ListView listViewData;
     private TextView placeSearch;
@@ -55,6 +55,13 @@ public class PlacesAfterSearch extends ActionBarActivity {
     InternetConnectionDetector internetConnection;
 
     FrameLayout listviewLayout, simpleLayout;
+
+
+    //--- values
+    String name = "name", palceAddress = "p_address", imagePath = "img_path", verify = "verify";
+    int checkinpoint = 0;
+
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +88,9 @@ public class PlacesAfterSearch extends ActionBarActivity {
         if (!internetConnection.isConnectingToInternet()) {
 
             showMessage("Internet not available ---> Previous Search Results <--- ");
-            _placeList.clear();
 
-            _placeList = db.getAllPlaces();
+            loadingDatafromDataBase();
 
-            for (PlaceDetail pd : _placeList) {
-
-                String data = "database --> name : " + pd.getPlaceName() + " address : " + pd.getPlaceAddress() + " Image path: " + pd.getPlaceImageUrl() + " verification : " + pd.getPlaceVerefiedOrNot();
-
-                Log.d("name is : ", data);
-            }
 
         } else {
 
@@ -98,7 +98,8 @@ public class PlacesAfterSearch extends ActionBarActivity {
             db.clearDataFromTable();
             showMessage("Internet available ---> New Search Results <--- ");
 
-            new ParseDataToList().execute();
+            loadingDatafromAvailableApi();
+
 
         }
         adapterList = new PlaceAdapter(PlacesAfterSearch.this, _placeList);
@@ -112,23 +113,30 @@ public class PlacesAfterSearch extends ActionBarActivity {
                 listviewLayout.setVisibility(View.GONE);
                 backButton.setVisibility(View.VISIBLE);
 
+                // -- selected item from list show data in fragments
                 PlaceDetail data = (PlaceDetail) adapterList.getItem(position);
                 String place_name = data.getPlaceName();
-
                 String place_address = data.getPlaceAddress();
                 String image_path = data.getPlaceImageUrl();
                 String place_verification = data.getPlaceVerefiedOrNot();
+                int checkIndata = data.get_checkIn();
+
+
                 showMessage("Place name " + place_name + " place address" + place_address + " Place Verificaiton" + place_verification);
+
+                // -- passing data to fragments with bundle
                 ShowPlaceDetails show_data_fragment = new ShowPlaceDetails();
                 Bundle bundle = new Bundle();
                 bundle.putString("place_name", place_name);
                 bundle.putString("place_address", place_address);
                 bundle.putString("place_verify", place_verification);
                 bundle.putString("imagePath", image_path);
+                bundle.putInt("checkin", checkIndata);
                 show_data_fragment.setArguments(bundle);
-                ShowPlaceDetails placeFragment = (ShowPlaceDetails) getSupportFragmentManager().findFragmentByTag("fragment_tag");
-                if (placeFragment == null)
-                    showFragment();
+                FragmentTransaction transact = getSupportFragmentManager().beginTransaction();
+                transact.add(R.id.fragment_show, show_data_fragment, "fragment_tag");
+                transact.addToBackStack(null);
+                transact.commit();
 
 
             }
@@ -147,22 +155,41 @@ public class PlacesAfterSearch extends ActionBarActivity {
 
     }
 
-    private void showFragment() {
+    private void loadingDatafromAvailableApi() {
+
+        new ParseDataToList().execute();
+    }
+
+    private void loadingDatafromDataBase() {
+
+        _placeList.clear();
+
+        _placeList = db.getAllPlaces();
 
 
-        ShowPlaceDetails placeFragment = ShowPlaceDetails.newInstance();
-        FragmentTransaction transact = getSupportFragmentManager().beginTransaction();
-        transact.add(R.id.fragment_show, placeFragment, "fragment_tag");
-        transact.commit();
+        // --- loging the databse into the android log message for confirmation only
+
+        for (PlaceDetail pd : _placeList) {
+            String data = "database --> name : " + pd.getPlaceName() + " address : " + pd.getPlaceAddress() + " Image path: " + pd.getPlaceImageUrl() + " verification : " + pd.getPlaceVerefiedOrNot();
+
+            Log.d("name is : ", data);
+        }
 
     }
+
 
     private class ParseDataToList extends AsyncTask<Void, Void, Void> {
 
 
         @Override
         protected void onPreExecute() {
+
             super.onPreExecute();
+            dialog = new ProgressDialog(PlacesAfterSearch.this);
+            dialog.setMessage("Please Wait Loading");
+            dialog.setCancelable(false);
+            dialog.show();
+
             showMessage("Please wait..");
             apiString = "https://api.foursquare.com/v2/venues/search?ll=28.4700,77.0300&query=" + _query + "&oauth_token=PBTK4K5BQ21HJSH5MJOBDINBKCK3MJNT1DL4IFQEJJ40CB4S&v=20151229";
             Log.d("api Call", apiString);
@@ -187,9 +214,9 @@ public class PlacesAfterSearch extends ActionBarActivity {
                         JSONArray venueJsonArray = responseJsonObject.getJSONArray("venues");
                         showMessage("Venues length " + venueJsonArray.length());
 
-                        int length_venues_array = venueJsonArray.length();
 
-                        String name = "", palceAddress = "", imagePath = "", verify = "";
+                        // ----> checking the length of total
+                        int length_venues_array = venueJsonArray.length();
 
 
                         for (int i = 0; i < length_venues_array; i++) {
@@ -198,32 +225,43 @@ public class PlacesAfterSearch extends ActionBarActivity {
 
                                 JSONObject venuInsideJSONobject = venueJsonArray.getJSONObject(i);
                                 PlaceDetail placeDetail = new PlaceDetail();
-                                placeDetail.setPlaceName(venuInsideJSONobject.getString("name"));
+
+                                //-- getting place name
                                 name = venuInsideJSONobject.getString("name");
-                                imagePath = "path";
-                                Log.d("name ", i + " " + venuInsideJSONobject.getString("name"));
+                                placeDetail.setPlaceName(name);
+
+                                //-- getting place address
                                 JSONObject locationObject = venuInsideJSONobject.getJSONObject("location");
-                                placeDetail.setPlaceAddress(locationObject.getString("address"));
                                 palceAddress = locationObject.getString("address");
+                                placeDetail.setPlaceAddress(palceAddress);
+
+
+                                // -- getting verification value
                                 if (venuInsideJSONobject.getBoolean("verified")) {
 
-                                    placeDetail.setPlaceVerfication("Verified");
                                     verify = "Verified";
+                                    placeDetail.setPlaceVerfication(verify);
+
                                 } else if (!venuInsideJSONobject.getBoolean("verified")) {
-                                    placeDetail.setPlaceVerfication("Not Verified");
                                     verify = "Not Verified";
+                                    placeDetail.setPlaceVerfication(verify);
+
                                 } else {
-                                    placeDetail.setPlaceVerfication("Verification Not Available");
                                     verify = "Verification Not Available";
+                                    placeDetail.setPlaceVerfication(verify);
+
                                 }
 
+                                // --- getting check in points
                                 JSONObject CheckInPoints = venuInsideJSONobject.getJSONObject("stats");
-
-                                int checkinpoint = CheckInPoints.getInt("checkinsCount");
+                                checkinpoint = CheckInPoints.getInt("checkinsCount");
                                 placeDetail.setCheckIn(checkinpoint);
 
-                                db.addplaceDetails(new PlaceDetail(name, palceAddress, imagePath, verify,checkinpoint));
 
+                                // -- inserting data into database on each iteration with different values if json dont give any value then insert default value
+                                db.addplaceDetails(new PlaceDetail(name, palceAddress, imagePath, verify, checkinpoint));
+
+                                // -- adding class object value to list on each iteration
                                 _placeList.add(placeDetail);
 
                             }
@@ -257,6 +295,9 @@ public class PlacesAfterSearch extends ActionBarActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 
         }
     }
@@ -267,4 +308,17 @@ public class PlacesAfterSearch extends ActionBarActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        internetConnection = null;
+        db = null;
+        _placeList = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 }

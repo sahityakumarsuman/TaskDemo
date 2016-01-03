@@ -27,7 +27,6 @@ public class PlaceAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
 
-
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public PlaceAdapter(Activity activit, List<PlaceDetail> place) {

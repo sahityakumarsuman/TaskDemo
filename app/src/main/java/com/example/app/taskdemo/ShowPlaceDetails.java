@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Duke on 12/29/2015.
  */
 public class ShowPlaceDetails extends Fragment {
 
-    private TextView placeName, placeAddress, placeVerification, placeSummry, placeFormatedAddress;
-    Bundle getData;
+    private TextView placeName, placeAddress, placeVerification, placeCheckIns, placeFormatedAddress;
+
 
     public ShowPlaceDetails() {
 
@@ -24,7 +23,6 @@ public class ShowPlaceDetails extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getData = savedInstanceState;
     }
 
     @Nullable
@@ -35,18 +33,32 @@ public class ShowPlaceDetails extends Fragment {
         placeName = (TextView) view.findViewById(R.id.place_name_text_fragment);
         placeAddress = (TextView) view.findViewById(R.id.place_address_fragment_hh);
         placeVerification = (TextView) view.findViewById(R.id.place_verification_fragment);
-        placeSummry = (TextView) view.findViewById(R.id.place_summry_fragment);
+        placeCheckIns = (TextView) view.findViewById(R.id.place_checkIn_fragment);
         placeFormatedAddress = (TextView) view.findViewById(R.id.place_formatedAddress_fragment);
 
 
-//        String data = this.getArguments().getString("place_name");
-//        Toast.makeText(getActivity(), data, Toast.LENGTH_SHORT).show();
-        //+ getArguments().getString("place_name")
-        //+ getArguments().getString("place_address")
-        //+ getArguments().getString("place_verify")
-        placeName.setText("Place Name is : ");
-        placeAddress.setText("Place Address is : ");
-        placeVerification.setText("Place Verification is :");
+        String place_name, place_address, place_verification;
+        int place_checkins;
+        Bundle getData = this.getArguments();
+        if (getData == null) {
+            place_name = "";
+            place_address = "";
+            place_verification = "";
+            place_checkins = 0;
+        } else {
+
+            place_name = getData.getString("place_name");
+            place_address = getData.getString("place_address");
+            place_verification = getData.getString("place_verify");
+            place_checkins = getData.getInt("checkin");
+
+            placeName.setText("Place Name is :  " + place_name);
+            placeAddress.setText("Place Address is :  " + place_address);
+            placeVerification.setText("Place Verification is :  " + place_verification);
+            placeCheckIns.setText("Place CheckIns  : " + place_checkins);
+
+        }
+
 
         return view;
     }
